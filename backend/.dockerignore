@@ -1,0 +1,37 @@
+# Python environments and caches
+venv/
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Trained or local model folders
+trained_legal_model_fixed/
+uploads/
+*.pkl
+*.csv  # Exclude local CSV data unless you want to COPY it into image!
+
+# Local logs and editor/OS files
+*.log
+.DS_Store
+
+# Frontend – prevent copying large or unnecessary UI files
+../frontend/
+../frontend/node_modules/
+../frontend/dist/
+../frontend/.angular/
+../frontend/.vscode/
+
+# Node/JS artifacts (if stray in backend)
+node_modules/
+dist/
+.angular/
+.vscode/
+
+# Secrets
+.env
+
+# Git
+.git
+.gitignore
