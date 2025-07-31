@@ -1,0 +1,61 @@
+<app-header/>
+
+ @if(isinputgiven()){
+<form >
+ 
+<div class="upload-container">
+  <div  class="upload-box">
+    <div class="plus-icon">+</div>
+    <label class="upload-label">Drag and drop the<br />Legal document</label>
+    <input type="file"  #fileinput accept=".pdf, .txt, .doc, .docx" class="file-input" (change)="onfileselect(fileinput)" />
+    
+   
+  </div>
+ 
+</div>
+
+
+
+</form>
+ }
+
+@if (isloading()) {
+   <div  class="loader-overlay">
+  <span class="loader"></span>
+</div>
+}
+
+@if(showvisualization()){
+<div class="charts-flex-row">
+  <div class="glassmorphic-box1">
+    <app-bargraph-component [analysisData]="analysisData()"></app-bargraph-component>
+  </div>
+  <div class="glassmorphic-box2">
+    <app-piechart-component [analysisData]="analysisData()"></app-piechart-component>
+  </div>
+</div>
+
+}
+@if(anlayze()){
+   <div class="doc-summary">
+  <div class="summary-row">
+    <span class="summary-label">Document Score:</span>
+    <span class="summary-value">{{analysisData().document_risk_score| percent:'1.2-2'}}</span>
+
+  </div>
+  <div class="summary-row">
+    <span class="summary-label">Document Risk Type:</span>
+    <span class="summary-value">{{analysisData().document_risk_level}}</span>
+  </div>
+</div>
+    
+}
+@if(anlayze()){
+  <button
+  type="button"
+  class="csv-download-btn"
+  (click)="downloadcsv()"
+>
+  ⬇️ Download CSV
+</button>
+}
