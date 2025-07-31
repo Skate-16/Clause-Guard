@@ -1,7 +1,9 @@
 backend/trained_legal_model_fixed
 backend/venv/
+backend/uploads/
 # Frontend-specific
 /frontend/node_modules
 /frontend/dist
 /frontend/.angular
 /frontend/.vscode
+.env

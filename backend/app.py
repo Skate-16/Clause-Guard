@@ -12,18 +12,34 @@ from pdf2image import convert_from_path
 from sentence_transformers import SentenceTransformer
 from flask_cors import CORS
 
+from huggingface_hub import snapshot_download
+from dotenv import load_dotenv
+import os
 
-app = Flask(__name__)
-CORS(app, origins=["http://localhost:4200"]) 
+load_dotenv() 
+HF_TOKEN = os.getenv("HF_TOKEN")
 
+print(">>> Downloading model folder from Hugging Face Hub ...")
+model_dir = snapshot_download(
+    repo_id="Skate-16/Clause-Guard",    
+    use_auth_token=HF_TOKEN
+)
+print(">>> Downloaded model to:", model_dir)
 print(">>> Loading SentenceTransformer model ...")
-model_dir = 'trained_legal_model_fixed'
-assert os.path.exists(model_dir), "Model folder missing!"
 model = SentenceTransformer(model_dir)
 print(">>> Model loaded.")
 
+app = Flask(__name__)
+
+frontend_url = os.getenv("FRONTEND_URL")               
+origins = ["http://localhost:4200"]
+if frontend_url:
+    origins.append(frontend_url)
+CORS(app, origins=origins)
+
 print(">>> Reading clauses from CSV ...")
-clauses_df = pd.read_csv('legal_clauses.csv')
+clauses_df = pd.read_csv('legal_clauses.csv')  
+
 def unwrap_clause(c):
     try:
         return ast.literal_eval(c)[0] if isinstance(c, str) and c.startswith("[") else c
@@ -33,7 +49,6 @@ clauses_df['Clause'] = clauses_df['Clause'].apply(unwrap_clause)
 clauses = clauses_df['Clause'].tolist()
 print(f">>> Loaded {len(clauses)} clauses.")
 
-# === Precompute clause embeddings ONCE at startup ===
 print("Embedding reference clauses ...")
 clause_embeddings = model.encode(clauses, convert_to_tensor=False, batch_size=32)
 clause_embeddings = np.array(clause_embeddings, dtype='float32')
@@ -81,7 +96,6 @@ def analyze():
         file.save(file_path)
         print(f">>> [API] Saved file to {file_path}")
 
-        # Extract text
         test_text = extract_text(file_path)
         print(f">>> [API] Extracted text length: {len(test_text)} chars")
 
@@ -100,12 +114,10 @@ def analyze():
         index.add(chunk_embeddings)
         print(">>> [API] Document chunk embeddings completed.")
 
-        # ---- USE ONLY PRECOMPUTED clause_embeddings ----
         print(">>> [API] Running FAISS similarity search ...")
         D, I = index.search(clause_embeddings, 3)
         print(">>> [API] Similarity search complete.")
 
-        # Match processing
         results = []
         for i, (distances, indices) in enumerate(zip(D, I)):
             clause = clauses[i]
@@ -140,7 +152,6 @@ def analyze():
             total_weight = sum(weights[row["risk_level"]] for _, row in best_results.iterrows())
             avg_similarity = weighted_sum / total_weight if total_weight > 0 else 0.0
             doc_risk_level = get_risk_label(avg_similarity)
-            # Save CSV for download
             best_results["document_risk_score"] = avg_similarity
             best_results["document_risk_level"] = doc_risk_level
             save_path = os.path.join("uploads", "risky_clause_matches.csv")
