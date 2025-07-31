@@ -10,7 +10,7 @@ __pycache__/
 trained_legal_model_fixed/
 uploads/
 *.pkl
-*.csv  # Exclude local CSV data unless you want to COPY it into image!
+
 
 # Local logs and editor/OS files
 *.log

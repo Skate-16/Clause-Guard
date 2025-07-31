@@ -1,0 +1,29 @@
+# Python virtualenv/cache
+venv/
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Local models/data/uploads
+trained_legal_model_fixed/
+uploads/
+*.pkl
+*.log
+
+# Node/JS artifacts (if stray in backend)
+node_modules/
+dist/
+.angular/
+.vscode/
+
+# Editor/OS files
+.DS_Store
+
+# Secrets
+.env
+
+# Git
+.git
+.gitignore
