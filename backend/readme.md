@@ -10,7 +10,7 @@ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 # or Command Prompt
 venv\Scripts\activate
 # or Bash/Linux/Mac
-source venv/bin/activate
+source venv/Scripts/activate
 
 
 # Step 3: Install requirements
