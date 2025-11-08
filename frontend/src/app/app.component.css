@@ -5,23 +5,52 @@
   position: relative;
 }
 
-body, html {
-  height: 100%;
+/* global scroll-friendly rules */
+html, body {
+  height: auto;
+  min-height: 100%;
   margin: 0;
   padding: 0;
-  background: black;
   overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+app-root, body > app-root {
+  display: block;
+  min-height: 100vh;
+}
+
+/* Force scroll globally */
+body, html, :host {
+  overflow-y: auto !important;
+  height: auto !important;
+  min-height: 100vh !important;
+}
+
+/* Allow scrolling of app content */
+:host ::ng-deep app-root {
+  display: block;
+  height: auto !important;
+  min-height: 100vh !important;
+  overflow-y: visible !important;
+}
+
+:host ::ng-deep .charts-flex-row,
+:host ::ng-deep .doc-summary {
+  position: relative;
+  overflow: visible;
 }
 
 /* ==== Upload Area ==== */
 .upload-container {
-  position: absolute;
-  top: 56%;
-  left: 50%;
-  transform: translate(-50%, -65%);
+  position: relative;
+  margin: 48px auto 12px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  max-width: 1200px;
+  padding: 0 16px;
 }
 
 .upload-box {
@@ -46,7 +75,6 @@ body, html {
   0%, 100% { border-color: #1a237e; }
   50% { border-color: #4a148c; }
 }
-
 
 .plus-icon {
   font-size: 8rem;
@@ -92,7 +120,7 @@ body, html {
   outline-offset: -3px;
 }
 
-/* ==== Button */
+/* ==== Button ==== */
 .buttoncs {
   position: static;
   width: 340px;
@@ -152,24 +180,24 @@ body, html {
   100% { transform: rotate(360deg); }
 }
 
-/* ==== Charts (row and boxes) ==== */
+/* ==== Charts ==== */
 .charts-flex-row {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   align-items: stretch;
   gap: 48px;
-  margin: 36px 0 0 0;
+  margin: 80px 0 0 0;
 }
 
 @keyframes slideInFromLeft {
   0% { transform: translateX(-80px); opacity: 0; }
-  100% { transform: translateX(0); opacity:1; }
+  100% { transform: translateX(0); opacity: 1; }
 }
 
 @keyframes slideInFromRight {
   0% { transform: translateX(80px); opacity: 0; }
-  100% { transform: translateX(0); opacity:1; }
+  100% { transform: translateX(0); opacity: 1; }
 }
 
 .glassmorphic-box1,
@@ -203,18 +231,17 @@ body, html {
 /* ==== Summary & Button ==== */
 .doc-summary {
   margin-top: 27px;
-  margin-bottom: 12px;
+  margin-bottom: 36px;
   background: rgba(30,42,90,0.19);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  display: block;
   border-radius: 16px;
-  padding: 18px 28px 14px 28px;
-  min-width: 240px;
-  width: fit-content;
+  padding: 22px 32px 24px 32px;
+  max-width: 1100px;
+  width: calc(100% - 40px);
   margin-left: auto;
   margin-right: auto;
+  box-sizing: border-box;
+  color: #fff;
 }
 
 .summary-row {
@@ -239,9 +266,22 @@ body, html {
   letter-spacing: 0.01em;
 }
 
+/* Scrollable summary text */
+.doc-summary .summary-text {
+  background: rgba(0,0,0,0.35);
+  border-radius: 10px;
+  padding: 16px;
+  color: #f1f1f1;
+  line-height: 1.6;
+  max-height: 420px;
+  overflow: auto;
+  margin-top: 16px;
+}
+
+/* CSV download button */
 .csv-download-btn {
-  display: block;
-  margin: 10px auto 0 auto;
+  display: inline-block;
+  margin: 18px 0 0 0;
   padding: 11px 30px;
   background: linear-gradient(to bottom, #1a237e, #4a148c);
   color: #fff;
@@ -253,6 +293,7 @@ body, html {
   cursor: pointer;
   letter-spacing: 0.03em;
   transition: background 0.22s, box-shadow 0.18s, transform 0.13s;
+  text-decoration: none;
 }
 
 .csv-download-btn:hover,
@@ -262,7 +303,7 @@ body, html {
   outline: none;
 }
 
-/* ================ Responsive Media Queries ================ */
+/* ==== Responsive ==== */
 @media (min-width: 1300px) {
   .glassmorphic-box1,
   .glassmorphic-box2 { width: 440px; height: 440px; padding: 48px 32px; }
@@ -313,4 +354,23 @@ body, html {
     padding: 10px 0;
     margin: 0 auto 10px auto;
   }
+}
+
+/* small helpful rule */
+.doc-summary .summary-row[style] {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+/* --- Force Scroll Enable --- */
+html, body, app-root, :host {
+  height: auto !important;
+  min-height: 100% !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+}
+
+body {
+  display: block !important;
+  position: relative !important;
 }
